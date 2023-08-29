@@ -31,7 +31,7 @@ Once Flutter is setup, you can use the latest `stable` channel:
  * `flutter run -d ios`
  * `flutter run -d android`
 
-### Impeller Rendering
+### Impeller Rendering  
 
 This app uses the new [Impeller Runtime](https://docs.flutter.dev/perf/impeller) by default on iOS.
 
