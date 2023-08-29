@@ -49,10 +49,9 @@ class RetryImage extends ImageProvider<Object> {
     return completer.future;
   }
 
-  @override
-  ImageStreamCompleter loadImage(Object key, ImageDecoderCallback decode) {
+  ImageStreamCompleter _commonLoad(ImageStreamCompleter Function() loader) {
     final _DelegatingImageStreamCompleter completer = _DelegatingImageStreamCompleter();
-    ImageStreamCompleter completerToWrap = imageProvider.loadImage(key, decode);
+    ImageStreamCompleter completerToWrap = loader();
     late ImageStreamListener listener;
 
     Duration duration = const Duration(milliseconds: 250);
@@ -70,7 +69,7 @@ class RetryImage extends ImageProvider<Object> {
         }
         Future<void>.delayed(duration).then((void v) {
           duration *= 2;
-          completerToWrap = imageProvider.loadImage(key, decode);
+          completerToWrap = loader();
           count += 1;
           completerToWrap.addListener(listener);
         });
@@ -83,6 +82,18 @@ class RetryImage extends ImageProvider<Object> {
     });
 
     return completer;
+  }
+
+  @override
+  // ignore: deprecated_member_use
+  ImageStreamCompleter load(Object key, DecoderCallback decode) {
+    // ignore: deprecated_member_use
+    return _commonLoad(() => imageProvider.load(key, decode));
+  }
+
+  @override
+  ImageStreamCompleter loadBuffer(Object key, DecoderBufferCallback decode) {
+    return _commonLoad(() => imageProvider.loadBuffer(key, decode));
   }
 
   @override
