@@ -45,6 +45,12 @@ class AppLogic {
       await FlutterDisplayMode.setHighRefreshRate();
     }
 
+    // Firebase
+    await crashlyticsLogic.init();
+    await analyticsLogic.init();
+    await authLogic.init();
+    await databaseLogic.init();
+
     // Settings
     await settingsLogic.load();
 

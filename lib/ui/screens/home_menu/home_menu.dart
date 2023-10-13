@@ -5,6 +5,7 @@ import 'package:wonders/logic/data/wonder_data.dart';
 import 'package:wonders/ui/common/app_backdrop.dart';
 import 'package:wonders/ui/common/app_icons.dart';
 import 'package:wonders/ui/common/controls/app_header.dart';
+import 'package:wonders/ui/common/controls/auth_widget.dart';
 import 'package:wonders/ui/common/controls/locale_switcher.dart';
 import 'package:wonders/ui/common/pop_navigator_underlay.dart';
 import 'package:wonders/ui/screens/home_menu/about_dialog_content.dart';
@@ -88,7 +89,14 @@ class _HomeMenuState extends State<HomeMenu> {
         AppHeader(
           isTransparent: true,
           backIcon: AppIcons.close,
-          trailing: (_) => LocaleSwitcher(),
+          trailing: (_) {
+            return Row(
+              children: <Widget>[
+                AuthWidget(),
+                LocaleSwitcher(),
+              ],
+            );
+          },
         ),
       ],
     );

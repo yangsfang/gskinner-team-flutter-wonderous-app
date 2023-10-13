@@ -18,6 +18,7 @@ export 'package:sized_context/sized_context.dart';
 export 'package:wonders/assets.dart';
 export 'package:wonders/logic/app_logic.dart';
 export 'package:wonders/logic/data/wonder_type.dart';
+export 'package:wonders/logic/firebase_logic.dart';
 export 'package:wonders/logic/settings_logic.dart';
 export 'package:wonders/main.dart';
 export 'package:wonders/router.dart';

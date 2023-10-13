@@ -1,10 +1,9 @@
 import 'package:wonders/common_libs.dart';
-import 'package:wonders/logic/common/save_load_mixin.dart';
 import 'package:wonders/logic/data/collectible_data.dart';
+import 'package:wonders/logic/json_storage_service.dart';
 
-class CollectiblesLogic with ThrottledSaveLoadMixin {
-  @override
-  String get fileName => 'collectibles.dat';
+class CollectiblesLogic {
+  JsonStorageManagerService get storage => GetIt.I.get<JsonStorageManagerService>(instanceName: 'collectibles');
 
   /// Holds all collectibles that the views should care about
   final List<CollectibleData> all = collectiblesData;
@@ -72,8 +71,26 @@ class CollectiblesLogic with ThrottledSaveLoadMixin {
     scheduleSave();
   }
 
-  @override
-  void copyFromJson(Map<String, dynamic> value) {
+  Future<void> load() async {
+    final loadedValue = await storage.load();
+    _copyFromJson(loadedValue);
+  }
+
+  Future<void> sync() async {
+    final loadedValue = await storage.load();
+    if (loadedValue.isNotEmpty) {
+      _copyFromJson(loadedValue);
+    } else {
+      scheduleSave();
+    }
+  }
+
+  Future<void> scheduleSave() async {
+    final valueToSave = _toJson();
+    await storage.save(valueToSave);
+  }
+
+  void _copyFromJson(Map<String, dynamic> value) {
     Map<String, int> states = {};
     for (int i = 0; i < all.length; i++) {
       String id = all[i].id;
@@ -82,6 +99,5 @@ class CollectiblesLogic with ThrottledSaveLoadMixin {
     statesById.value = states;
   }
 
-  @override
-  Map<String, dynamic> toJson() => statesById.value;
+  Map<String, dynamic> _toJson() => statesById.value;
 }

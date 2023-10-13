@@ -39,38 +39,65 @@ final appRouter = GoRouter(
         },
         routes: [
           AppRoute(ScreenPaths.splash, (_) => Container(color: $styles.colors.greyStrong)), // This will be hidden
-          AppRoute(ScreenPaths.home, (_) => HomeScreen()),
-          AppRoute(ScreenPaths.intro, (_) => IntroScreen()),
+          AppRoute(ScreenPaths.home, (_) => LogScreenView(HomeScreen(), screenName: 'home_screen')),
+          AppRoute(ScreenPaths.intro, (_) => LogScreenView(IntroScreen(), screenName: 'intro_screen')),
           AppRoute('/wonder/:type', (s) {
             int tab = int.tryParse(s.queryParams['t'] ?? '') ?? 0;
-            return WonderDetailsScreen(
-              type: _parseWonderType(s.params['type']),
-              initialTabIndex: tab,
+            return LogScreenView(
+              WonderDetailsScreen(
+                type: _parseWonderType(s.params['type']),
+                initialTabIndex: tab,
+              ),
+              screenName: 'wonder_details_screen',
             );
           }, useFade: true),
           AppRoute('/timeline', (s) {
-            return TimelineScreen(type: _tryParseWonderType(s.queryParams['type']!));
+            return LogScreenView(
+              TimelineScreen(type: _tryParseWonderType(s.queryParams['type']!)),
+              screenName: 'timeline_screen',
+            );
           }),
           AppRoute('/video/:id', (s) {
-            return FullscreenVideoViewer(id: s.params['id']!);
+            return LogScreenView(
+              FullscreenVideoViewer(id: s.params['id']!),
+              screenName: 'fullscreen_video_viewer',
+            );
           }),
           AppRoute('/highlights/:type', (s) {
-            return ArtifactCarouselScreen(type: _parseWonderType(s.params['type']));
+            return LogScreenView(
+              ArtifactCarouselScreen(type: _parseWonderType(s.params['type'])),
+              screenName: 'artifact_carousel_screen',
+            );
           }),
           AppRoute('/search/:type', (s) {
-            return ArtifactSearchScreen(type: _parseWonderType(s.params['type']));
+            return LogScreenView(
+              ArtifactSearchScreen(type: _parseWonderType(s.params['type'])),
+              screenName: 'artifact_serach_screen',
+            );
           }),
           AppRoute('/artifact/:id', (s) {
-            return ArtifactDetailsScreen(artifactId: s.params['id']!);
+            return LogScreenView(
+              ArtifactDetailsScreen(artifactId: s.params['id']!),
+              screenName: 'artifact_details_screen',
+            );
           }),
           AppRoute('/collection', (s) {
-            return CollectionScreen(fromId: s.queryParams['id'] ?? '');
+            return LogScreenView(
+              CollectionScreen(fromId: s.queryParams['id'] ?? ''),
+              screenName: 'collection_screen',
+            );
           }),
           AppRoute('/maps/:type', (s) {
-            return FullscreenMapsViewer(type: _parseWonderType(s.params['type']));
+            return LogScreenView(
+              FullscreenMapsViewer(type: _parseWonderType(s.params['type'])),
+              screenName: 'fullscreen_maps_viewer',
+            );
           }),
           AppRoute('/wallpaperPhoto/:type', (s) {
-            return WallpaperPhotoScreen(type: _parseWonderType(s.params['type']));
+            return LogScreenView(
+              WallpaperPhotoScreen(type: _parseWonderType(s.params['type'])),
+              screenName: 'wallpaper_photo_screen',
+            );
           }),
         ]),
   ],
@@ -119,3 +146,16 @@ WonderType _parseWonderType(String? value) {
 }
 
 WonderType? _tryParseWonderType(String value) => WonderType.values.asNameMap()[value];
+
+class LogScreenView extends StatelessWidget with GetItMixin {
+  LogScreenView(this.child, {super.key, required this.screenName});
+
+  final Widget child;
+  final String screenName;
+
+  @override
+  Widget build(BuildContext context) {
+    getX((AnalyticsLogic a) => a).logScreenView(screenName: screenName);
+    return child;
+  }
+}

@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:wonders/common_libs.dart';
 import 'package:wonders/logic/collectibles_logic.dart';
+import 'package:wonders/logic/json_storage_service.dart';
 import 'package:wonders/logic/locale_logic.dart';
 import 'package:wonders/logic/artifact_api_logic.dart';
 import 'package:wonders/logic/artifact_api_service.dart';
@@ -68,6 +69,28 @@ void registerSingletons() {
   GetIt.I.registerLazySingleton<CollectiblesLogic>(() => CollectiblesLogic());
   // Localizations
   GetIt.I.registerLazySingleton<LocaleLogic>(() => LocaleLogic());
+  // Authentication (Firebase)
+  GetIt.I.registerLazySingleton<FirebaseService>(() => FirebaseService());
+  GetIt.I.registerLazySingleton<AuthLogic>(() => AuthLogic());
+  // Firebase Analytics
+  GetIt.I.registerLazySingleton<AnalyticsLogic>(() => AnalyticsLogic());
+  GetIt.I.registerLazySingleton<CrashlyticsLogic>(() => CrashlyticsLogic());
+  // Firebase Database
+  GetIt.I.registerLazySingleton<FireDatabaseLogic>(() => FireDatabaseLogic());
+  GetIt.I.registerLazySingleton<JsonStorageManagerService>(
+    () => JsonStorageManagerService(
+      fileStorageFilename: 'settings.dat',
+      firebaseKeyName: 'settings',
+    ),
+    instanceName: 'settings',
+  );
+  GetIt.I.registerLazySingleton<JsonStorageManagerService>(
+    () => JsonStorageManagerService(
+      fileStorageFilename: 'collectibles.dat',
+      firebaseKeyName: 'collectibles',
+    ),
+    instanceName: 'collectibles',
+  );
 }
 
 /// Add syntax sugar for quickly accessing the main "logic" controllers in the app
@@ -81,6 +104,10 @@ ArtifactAPILogic get metAPILogic => GetIt.I.get<ArtifactAPILogic>();
 CollectiblesLogic get collectiblesLogic => GetIt.I.get<CollectiblesLogic>();
 WallPaperLogic get wallpaperLogic => GetIt.I.get<WallPaperLogic>();
 LocaleLogic get localeLogic => GetIt.I.get<LocaleLogic>();
+AnalyticsLogic get analyticsLogic => GetIt.I.get<AnalyticsLogic>();
+AuthLogic get authLogic => GetIt.I.get<AuthLogic>();
+CrashlyticsLogic get crashlyticsLogic => GetIt.I.get<CrashlyticsLogic>();
+FireDatabaseLogic get databaseLogic => GetIt.I.get<FireDatabaseLogic>();
 
 /// Global helpers for readability
 AppLocalizations get $strings => localeLogic.strings;
